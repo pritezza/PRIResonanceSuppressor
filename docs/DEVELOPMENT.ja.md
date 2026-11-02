@@ -2,7 +2,7 @@
 
 [English](DEVELOPMENT.md) | **日本語**
 
-プラグインを確かめるツール、負荷を測るツール、README の画像を作り直すツールについて書いています。プラグインをビルドするだけなら、README の [ソースからのビルド](../README.ja.md#ソースからのビルド) を参照してください。
+プラグインを確かめるツール、負荷を測るツール、README の画像を作り直すツール、配布用の zip を作るスクリプトについて書いています。プラグインをビルドするだけなら、README の [ソースからのビルド](../README.ja.md#ソースからのビルド) を参照してください。
 
 ## ツールのビルド
 
@@ -87,3 +87,16 @@ powershell -ExecutionPolicy Bypass -File Tools\MakeReadmeMedia.ps1 -Ffmpeg <ffmp
   - 削っている様子の GIF: 往復する共振を足したピンクノイズ。
 - ffmpeg に PATH が通っていれば、`-Ffmpeg` は省けます。
 - コマは `build/readme-frames` に書き出し、GIF ができたら消します。
+
+## リリースの作成
+
+[Tools/MakeRelease.ps1](../Tools/MakeRelease.ps1) で、プラグインをビルドし、配布用の zip を `build/release/PRIResonanceSuppressor-<バージョン>-win64.zip` に作ります。開発用のツールは要りません。
+
+```powershell
+powershell -ExecutionPolicy Bypass -File Tools\MakeRelease.ps1
+```
+
+- バージョンは CMakeLists.txt の `project(... VERSION ...)` から取ります。
+- zip には、`.vst3` フォルダ、LICENSE.txt、THIRD_PARTY_NOTICES.txt、短い README.txt（インストール手順とソースの場所。英語と日本語）が入ります。
+- LTO が OFF なら止まります。コミットしていない変更があれば警告します。
+- そのあと、コミットに `v<バージョン>` のタグを付けて push し、GitHub のリリースに zip を添付します。

@@ -2,7 +2,7 @@
 
 **English** | [日本語](DEVELOPMENT.ja.md)
 
-This page covers the tools for checking and measuring the plug-in, and for regenerating the README images. If you only want to build the plug-in, see [Building from source](../README.md#building-from-source) in the README.
+This page covers the tools for checking and measuring the plug-in, for regenerating the README images, and for packaging a release. If you only want to build the plug-in, see [Building from source](../README.md#building-from-source) in the README.
 
 ## Building the tools
 
@@ -87,3 +87,16 @@ powershell -ExecutionPolicy Bypass -File Tools\MakeReadmeMedia.ps1 -Ffmpeg <path
   - For the reduction GIF: pink noise with a sweeping resonance.
 - Leave out `-Ffmpeg` if ffmpeg is on your PATH.
 - The frames are written to `build/readme-frames` and deleted when the GIFs are done.
+
+## Making a release
+
+[Tools/MakeRelease.ps1](../Tools/MakeRelease.ps1) builds the plug-in and writes the release zip to `build/release/PRIResonanceSuppressor-<version>-win64.zip`. It doesn't need the development tools.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File Tools\MakeRelease.ps1
+```
+
+- The version comes from `project(... VERSION ...)` in CMakeLists.txt.
+- The zip contains the `.vst3` folder, LICENSE.txt, THIRD_PARTY_NOTICES.txt and a short README.txt (installation and source location, in English and Japanese).
+- The script stops if LTO is off, and warns if there are uncommitted changes.
+- Then tag the commit as `v<version>`, push the tag, and attach the zip to a GitHub release.
